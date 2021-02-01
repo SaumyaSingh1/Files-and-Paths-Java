@@ -12,7 +12,7 @@ public class WalkFileTreeExample extends SimpleFileVisitor<Path> {
     Then visit file is called (for every file)
     Finally postVisit is called for the directories
     * */
-    Path resource= Paths.get("/home/sausingh/Documents/Test");
+    Path resource= Paths.get("/home/sausingh/Documents/Resources/");
 
     // This is called just before visiting the directory
     @Override
@@ -24,12 +24,13 @@ public class WalkFileTreeExample extends SimpleFileVisitor<Path> {
     // This method is called for every file in the given directory structure
     @Override
     public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
-        System.out.print(" File Name : " + file.getFileName().toString());
-        System.out.print(" Parent : "+ file.getParent());
-        System.out.print(" Relativize File : " + resource.relativize(file));
-        System.out.print(" Relativize Parent : " + resource.relativize(file).getParent());
+        System.out.println(" File Name : " + file.getFileName().toString());
+        System.out.println(" Parent : "+ file.getParent());
+        System.out.println(" Relativize File : " + resource.relativize(file));
+        System.out.println(" Relativize Parent : " + resource.relativize(file).getParent());
         return FileVisitResult.CONTINUE;
     }
+
     // This is called if any file cannot be visited due to some reason
     @Override
     public FileVisitResult visitFileFailed(Path file, IOException exc) throws IOException {
@@ -47,6 +48,6 @@ public class WalkFileTreeExample extends SimpleFileVisitor<Path> {
         WalkFileTreeExample walkFileTreeExample= new WalkFileTreeExample();
 
         // First param of walkFileTree method is imp- it is the file path on which we want to loop through
-        Files.walkFileTree(Paths.get("/home/sausingh/Documents/Test"), walkFileTreeExample);
+        Files.walkFileTree(Paths.get("/home/sausingh/Documents/Resources/"), walkFileTreeExample);
     }
 }

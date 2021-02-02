@@ -31,6 +31,7 @@ public class SimpleFileVisitorExample extends SimpleFileVisitor<Path> {
         System.out.println(" Relative Path of Directory : " + relativePathOfDir);
         System.out.println(" Parent of Dir : " + dir.getParent());
         System.out.println(" Relative Parent of Dir : " + relativeParent);
+        System.out.println(" PARENT : " + dir.getParent().getFileName());
         Path directoryName= dir.getFileName();
         System.out.println(" PreVisit file : " + directoryName);
         if(!resourcesMap.containsKey(directoryName)){
@@ -54,10 +55,12 @@ public class SimpleFileVisitorExample extends SimpleFileVisitor<Path> {
         String completeParentPath= file.getParent().toString();
         String relatedFileName= resource.relativize(file).toString();
         Path relatedParentName= resource.relativize(file).getParent();
+        Path nameOfParent= file.getParent().getFileName();
         System.out.println("File Name: " + fileName);
         System.out.println("Whole Parent Path: " + completeParentPath);
         System.out.println("Related File Name: " + relatedFileName);
-        System.out.println("Related Directory Name: " + relatedParentName);
+        System.out.println("Related Parent Directory Name: " + relatedParentName);
+        System.out.println("Parent Of File : " + nameOfParent);
         // getFileSystem and getNameCount and getRoot don't give much useful information
         List<StaticFile> childrenList= new ArrayList<>();
         if(resourcesMap.containsKey(relatedParentName)){
@@ -66,8 +69,8 @@ public class SimpleFileVisitorExample extends SimpleFileVisitor<Path> {
             resourcesMap.put(relatedParentName, new StaticFile(relatedParentName.toString(), true, childrenList));
         }
 //        StaticFile staticFile= new StaticFile(fileName, attrs.isDirectory(), null);
-//        System.out.println("STATIC FILE : " + staticFile.children);
-        //resourcesMap.put(staticFile, resource.relativize(file).getParent());
+//        System.out.println("STATIC FILE : " + staticFile.children)
+//        resourcesMap.put(staticFile, resource.relativize(file).getParent());
         return FileVisitResult.CONTINUE;
     }
 
@@ -89,6 +92,7 @@ public class SimpleFileVisitorExample extends SimpleFileVisitor<Path> {
         for(StaticFile value: resourcesMap.values()){
             System.out.println(" Values : " + value.children);
         }
+
         System.out.println("ResourcePath Map : "+ resourcesMap);
 
     }

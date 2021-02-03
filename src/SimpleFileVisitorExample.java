@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 import java.util.TreeMap;
 import java.util.TreeSet;
 
@@ -22,9 +23,11 @@ public class SimpleFileVisitorExample extends SimpleFileVisitor<Path> {
 
     // Map <Static File, Parent Path>
     public static Map<Path, StaticFile> resourcesMap= new HashMap<>();
+    Stack<Path> currentFolder= new Stack<>();
 
     @Override
     public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+        currentFolder.push(dir.getFileName());
         System.out.println(" About to visit  " + dir);
         String relativePathOfDir= resource.relativize(dir).toString();
         Path relativeParent= resource.relativize(dir).getParent();
@@ -33,18 +36,13 @@ public class SimpleFileVisitorExample extends SimpleFileVisitor<Path> {
         System.out.println(" Relative Parent of Dir : " + relativeParent);
         System.out.println(" PARENT : " + dir.getParent().getFileName());
         Path directoryName= dir.getFileName();
-        System.out.println(" PreVisit file : " + directoryName);
+        System.out.println(" Directory Name : " + directoryName);
+        System.out.println(" Current Folder : " + currentFolder.peek());
         if(!resourcesMap.containsKey(directoryName)){
             // if not create a new StaticFile for the directory and save it in your map.
             StaticFile staticFile= new StaticFile(directoryName.toString(), attrs.isDirectory(), null);
             resourcesMap.put(directoryName, staticFile);
         }
-        return FileVisitResult.CONTINUE;
-    }
-
-    @Override
-    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
-        System.out.println(" Just Visited " + dir);
         return FileVisitResult.CONTINUE;
     }
 
@@ -74,6 +72,15 @@ public class SimpleFileVisitorExample extends SimpleFileVisitor<Path> {
         return FileVisitResult.CONTINUE;
     }
 
+    //return back to previous folder you were visiting
+    @Override
+    public FileVisitResult postVisitDirectory(Path dir, IOException exc) throws IOException {
+        System.out.println(" Just Visited " + dir);
+        System.out.println(" POP RESULT : " + currentFolder.pop());
+        return FileVisitResult.CONTINUE;
+    }
+
+
 
     public static void main(String[] args) throws Exception{
         SimpleFileVisitorExample simpleFileVisitorExample= new SimpleFileVisitorExample();
@@ -90,8 +97,10 @@ public class SimpleFileVisitorExample extends SimpleFileVisitor<Path> {
             System.out.println(" Key : " + m.getKey() + ", Value : " + m.getValue());
         }
         for(StaticFile value: resourcesMap.values()){
-            System.out.println(" Values : " + value.children);
+            List<StaticFile> childList= value.children;
+            System.out.println(" CHILDLIST : " + childList);
         }
+
 
         System.out.println("ResourcePath Map : "+ resourcesMap);
 
